@@ -63,20 +63,22 @@ export default function useTouchNavigation({
       const TOUCHED_Y_POSITION = event.changedTouches[0].clientY;
 
       const isUnderBreakPointRange = TOUCHED_Y_POSITION < BREAK_POINT[0];
-      const isOverBreakPointRange =
-        TOUCHED_Y_POSITION >
-        BREAK_POINT[BREAK_POINT.length - 1] + elementHeight;
 
-      if (isUnderBreakPointRange || isOverBreakPointRange) return;
+      if (isUnderBreakPointRange) return;
 
       const targetBreakPoint = BREAK_POINT.findIndex(
         (point) => point > TOUCHED_Y_POSITION
       );
 
-      if (targetBreakPoint <= 0) return;
+      const isOverBreakPointRange = targetBreakPoint <= 0;
 
       if (targetBreakPoint === 1) {
         window.scrollTo(0, 0);
+        return;
+      }
+
+      if (isOverBreakPointRange) {
+        window.scrollTo(0, anchorPositionList.current[BREAK_POINT.length - 1]);
         return;
       }
 
