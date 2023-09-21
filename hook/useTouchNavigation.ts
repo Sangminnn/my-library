@@ -72,11 +72,6 @@ export default function useTouchNavigation({
 
       const isOverBreakPointRange = targetBreakPoint <= 0;
 
-      if (targetBreakPoint === 1) {
-        window.scrollTo(0, 0);
-        return;
-      }
-
       if (isOverBreakPointRange) {
         window.scrollTo(0, anchorPositionList.current[BREAK_POINT.length - 1]);
         return;
