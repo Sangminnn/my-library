@@ -29,6 +29,13 @@ const EMPTY_FORMAT = {
   dash: "-",
 } as const;
 
+export const ceilNumber = (value: number, unit: number) =>
+  Math.ceil(value / (unit * 10)) * (unit * 10);
+export const floorNumber = (value: number, unit: number) =>
+  Math.floor(value / (unit * 10)) * (unit * 10);
+export const roundNumber = (value: number, unit: number) =>
+  Math.round(value / (unit * 10)) * (unit * 10);
+
 const FORMAT_ACTION = {
   ceil: Math.ceil,
   floor: Math.floor,
@@ -73,7 +80,7 @@ const formatNumberToKRW = ({
   value,
   emptyFormat = "dash",
   dividePriceLine,
-  options: { action = "round", actionTargetLine = 1000 } = {},
+  options: { action = "ceil", actionTargetLine = 1000 } = {},
 }: FormatNumberToKRWProps) => {
   if (!value) return `${EMPTY_FORMAT[emptyFormat]}원`;
 
@@ -81,9 +88,9 @@ const formatNumberToKRW = ({
     FORMAT_ACTION[action](value / (actionTargetLine * 10)) *
     (actionTargetLine * 10);
 
-  return formattedNumber > dividePriceLine
-    ? `${setCommaForNumber(cuttingNumber(value))}만원`
-    : `${setCommaForNumber(value)}원`;
+  return value > dividePriceLine
+    ? `${setCommaForNumber(cuttingNumber(formattedNumber))}만원`
+    : `${setCommaForNumber(formattedNumber)}원`;
 };
 
 export default formatNumberToKRW;
