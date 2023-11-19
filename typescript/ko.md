@@ -6,3 +6,30 @@
 - 줄여쓰기(shorthand) 방식(set(item: T): void;)은 메서드 파라미터를 이변적으로 동작시키기 위한 표기법이고, 프로퍼티 방식(set: (item: T) => void;)은 메서드 파라미터를 반공변적으로 동작시키기 위한 표기법
 
 - ts-pattern을 이용한 패턴 매칭 방식이 있는데, 이는 switch, if-else와 같은 조건부 케이스를 더욱 선언적이고 Type-safe하게 다룰 수 있도록 도와준다. 이를 활용하면 기존의 타입가드를 통해 디테일한 타입을 나누는 동작 없이도 타입을 정확하게 추론해주고, exhaustive 메서드를 활용하면 새로운 타입이 추가될 경우, 케이스에 대한 정의가 되어있지 않다면 이를 런타임 에러로 가드닝해준다.
+
+- react의 useRef는 사용방식에 따라 두가지 타입으로 나뉜다.
+  - 제네릭에 **<인자로 들어올 타입 || null>** 이 들어오는 케이스 : 이때는 MutableRefObject타입이 되어 current를 변경할 수 있게된다.
+  - 제네릭에 **<인자로 들어올 타입>**을 넣어주고 인자에 **null** 을 넣어주는 케이스 : 이때는 RefObject타입이 되어 current를 변경할 수 없게된다.
+
+```
+  function useRef<T>(initialValue: T): MutableRefObject<T>
+  function useRef<T>(initialValue: T | null): RefObject<T>
+  function useRef<T = undefined>(): MutableRefObject<T | undefined>
+
+  interface MutableRefObject<T> {
+    current: T;
+  }
+
+  interface RefObject<T> {
+    readonly current: T | null;
+  }
+```
+
+- ref로 넘겨준 타입은 내부적인 타입추론을 통해 ForwardedRef 타입으로 정의되는데 이는 아래와 같다. 이를 통해 ForwardedRef에는 MutableRefObject만 들어올 수 있다는 것을 알 수 있고, 이는 RefObject보다 넓은 범위의 타입을 가지기 때문에, 부모 컴포넌트에서 ref를 어떻게 선언했는지와 관계없이 자식 컴포넌트가 해당 Ref를 수용할 수 있다.
+
+```
+  type ForwardedRef<T> =
+    | ((instance: T | null) => void)
+    | MutableRefObject<T | null>
+    | null
+```
