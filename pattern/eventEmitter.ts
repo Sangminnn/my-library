@@ -58,3 +58,37 @@ class EventEmitterMap {
     }
   }
 }
+
+// other method
+// 특정 class 내에서 단일 이벤트만을 다룰때 사용하는 방식
+
+type Handler<T> = (e: T) => void;
+type RegisteredHandler<N extends string, E> = Map<N, Handler<E>[]>;
+
+class Events<N extends string, E> {
+  private e: E;
+  private registeredHandler: RegisteredHandler<N, E> = new Map();
+
+  constructor(e: E) {
+    this.e = e;
+  }
+
+  public on(event: N, handler: Handler<E>) {
+    const handlers = this.registeredHandler.get(event) ?? [];
+    handlers.push(handler);
+    this.registeredHandler.set(event, handlers);
+  }
+
+  public emit(event: N) {
+    const handlers = this.registeredHandler.get(event) ?? [];
+    handlers.forEach((handler) => handler(event));
+  }
+
+  public remove(event?: N) {
+    if (event) {
+      this.registeredHandler.delete(event);
+    } else {
+      this.registeredHandler.clear();
+    }
+  }
+}
