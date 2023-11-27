@@ -32,4 +32,21 @@
 
 - event의 isTrusted 옵션은 사용자에 의해 발생한 이벤트인지 브라우저에 의해 발생한 이벤트인지 판단할 수 있도록 하는 플래그이다.
 
-- CRA환경에서 global type을 선언해주기위해서는 react-app-env.d.ts 를 활용해야한다.
+- `commitlint.config.js` 파일 안에서 rules를 정할 수 있고, rules의 목록은 docs에 있다.
+
+사용법은 룰마다 3가지 인자가 필요한데 이는 아래와 같다.
+
+1. Alert 레벨 - 0: 비활성화, 1: 경고, 2: 에러
+2. Applicable - ‘always’, ‘never’로 never는 rule을 뒤집는다고 표현함
+3. value - 해당 룰에 대해 적용할 값
+
+```
+// example
+module.exports = {
+  extends: ['@commitlint/config-conventional'],
+  rules: {
+    'subject-case': [0, 'always'],
+  },
+}
+
+```

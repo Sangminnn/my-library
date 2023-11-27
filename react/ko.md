@@ -18,3 +18,7 @@ const ComponentNameSpace = () => {
 
 Component.NameSpace = ComponentNameSpace
 ```
+
+- CRA환경에서 global type을 선언해주기위해서는 react-app-env.d.ts 를 활용해야한다.
+
+- 개발을 진행하다보면 Page안에서 섹션 단위로 컴포넌트를 나누게되고, 이러한 컴포넌트들에 속하지 않는 page단의 View 코드가 생길 수 있음. 일반적으로는 문제가 없을 수 있으나, page단의에서 setter를 두어 re-render를 트리거하는 경우 다른 컴포넌트들도 불필요하게 렌더링될 수 있기때문에 Memoization을 잊지말고 해주어야한다.
