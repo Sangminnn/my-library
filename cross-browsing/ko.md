@@ -5,3 +5,5 @@
 - 일반적으로 ios safari의 하위버전을 호환하기 위한 코드가 많았는데, css rotate의 경우에는 ios safari에서는 하위버전도 잘 호환이 되는 반면, aos환경에서의 기본브라우저가 크롬인 경우 크롬 버전은 비교적 최신버전인 104버전까지만 지원한다. 따라서 동일 역할을 수행할 수 있는 transform의 rotate를 사용하면 하위버전까지 대응이 가능하다
 
 - ios safari에서는 16버전 이후로는 button tag의 default font color가 명시되어있지 않다면 blue컬러로 변환한다. 따라서 button tag 사용시에는 default color를 지정해주어야함. (14.4버전에서는 재현 X)
+
+- ios safari에서는 저전력모드가 켜져있을 경우 웹뷰환경에서의 비디오 자동재생이 불가능하게 막혀있다. 별도로 터치이벤트에 대한 eventListener를 달아두고, 이를 직접 터치했을 경우에는 실행이 되지만 스크립트로 이벤트를 일으킬 경우에는 동작하지 않는것을 보니 event의 read-only속성인 isTrusted를 체크하고있는것으로 보임.
