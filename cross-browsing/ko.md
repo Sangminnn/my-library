@@ -7,3 +7,11 @@
 - ios safari에서는 16버전 이후로는 button tag의 default font color가 명시되어있지 않다면 blue컬러로 변환한다. 따라서 button tag 사용시에는 default color를 지정해주어야함. (14.4버전에서는 재현 X)
 
 - ios safari에서는 저전력모드가 켜져있을 경우 웹뷰환경에서의 비디오 자동재생이 불가능하게 막혀있다. 별도로 터치이벤트에 대한 eventListener를 달아두고, 이를 직접 터치했을 경우에는 실행이 되지만 스크립트로 이벤트를 일으킬 경우에는 동작하지 않는것을 보니 event의 read-only속성인 isTrusted를 체크하고있는것으로 보임.
+
+- 추가적으로 IOS 디바이스에서 저전력모드가 켜져있을 경우 다음과 같은 제약이 있다.
+  - CPU Throttling (60% 제한)
+  - Background Application Refresh 제한
+  - WebView Video play제한 (위에 언급한 이슈)
+  - auto-download 제한
+  - GPU performacne 저하 (requestAnimationframe등의 효과 제한)
+  - 화면 밝기 저하
