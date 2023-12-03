@@ -94,3 +94,8 @@ const formatNumberToKRW = ({
 };
 
 export default formatNumberToKRW;
+
+/** @description 소수점을 커버하는 반올림 로직, 표현하고싶은 소수점자리를 point에 넣으면 된다. ex) point 2 = 0.00  */
+export function roundFloatNumber(value: number, point: number) {
+  return +(Math.round(Number(value + `e+${point}`)) + `e-${point}`);
+}
