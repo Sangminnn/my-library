@@ -16,3 +16,5 @@ useEffect(() => {
   refetchQuery()
 }, [state])
 ```
+
+- React-Query에서 useMutation을 사용할 때 mutationKey를 지정하지 않더라도 일반적으로는 문제가 생기지 않는다. 다만 이를 사용하는곳에서 re-rendering이 일어날때 mutationKey가 명시되어있지 않다면 식별자가 없기때문에, 이 함수 자체가 새로 생성되는 문제가 있어 항상 mutationKey를 명시해주는 것이 좋다.
