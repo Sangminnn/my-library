@@ -54,3 +54,14 @@ module.exports = {
 - 카카오톡은 url을 누르면 ogUrl로 열어주기때문에 ogUrl 주소를 제대로 입력해주어야한다. 또한 카카오는 카카오톡 공유의 디버거를 제공해주고있음. 한번 조회한 이후부터는 캐시가 남기때문에 이곳에서 캐시를 지워줄 수도 있다.
 
 - 모바일 구글 크롬은 `chrome://inspect` 를 입력해주면 디바이스 내에서 디버깅이 가능하다.
+
+- `list-style: none` 을 사용한다면 스크린 리더가 읽을 때 목록의 의미가 사라져버리기때문에
+  - role=”list” 를 같이 사용해준다.
+
+```jsx
+<ul style="list-style: none" role="list">
+  <li></li>
+</ul>
+```
+
+- `list-style-type: ‘’` 을 사용한다.
