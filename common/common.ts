@@ -99,3 +99,19 @@ export default formatNumberToKRW;
 export function roundFloatNumber(value: number, point: number) {
   return +(Math.round(Number(value + `e+${point}`)) + `e-${point}`);
 }
+
+export function hexToRgba(hex: string, alpha: number) {
+  let hashRemovedHex = hex.replace(/^#/, ""); // '#' 제거
+
+  if (hex.length === 3) {
+    hashRemovedHex = hex.replace(/(.)/g, "$1$1"); // 단축 표기를 확장
+  }
+
+  const bitConvertedHex = parseInt(hashRemovedHex, 16); // 16진수를 10진수로 변환
+
+  const r = (bitConvertedHex >> 16) & 255; // Red 성분 추출
+  const g = (bitConvertedHex >> 8) & 255; // Green 성분 추출
+  const b = bitConvertedHex & 255; // Blue 성분 추출
+
+  return `rgba(${r},${g},${b}, ${alpha})`;
+}

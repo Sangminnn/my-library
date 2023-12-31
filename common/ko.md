@@ -65,3 +65,7 @@ module.exports = {
 ```
 
 - `list-style-type: ‘’` 을 사용한다.
+
+- opacity와 rgba에서의 alpha 값의 차이는 opacity는 해당 엘리먼트의 모든 값의 명도를 핸들링하는 것이고, rgba는 background에 적용했다면 text는 제외하고 적용한다.
+
+- `a >> b`에서 `>>` 연산자는 a 값을 b비트만큼 이동시키는 연산자이다.
