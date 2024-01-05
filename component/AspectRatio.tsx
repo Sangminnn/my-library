@@ -1,18 +1,43 @@
 import React, { PropsWithChildren } from "react";
-import styled from "styled-components";
+import styled, { css } from "styled-components";
 
 interface Props {
   as: Element;
+  width: number;
+  height: number;
   style: React.CSSProperties;
   ratio: number;
 }
 
+const aspectRatio = ({
+  ratio,
+  tag,
+}: {
+  ratio: number;
+  tag: keyof JSX.IntrinsicElements;
+}) => css`
+  position: relative;
+  width: 100%;
+  height: 100%;
+  padding-top: calc(100% * ${ratio});
+
+  & > ${tag} {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+  }
+`;
+
 const AspectRatio = ({
   as,
   style,
-  ratio,
+  width,
+  height,
   children,
 }: PropsWithChildren<Props>) => {
+  const ratio = height / width;
   return (
     <RatioWrapper style={style} ratio={ratio} as={as}>
       {children}
@@ -23,7 +48,7 @@ const AspectRatio = ({
 const RatioWrapper = styled.div<{ ratio: number }>`
   position: relative;
   width: 100%;
-  padding-top: ${({ ratio }) => ratio && `${100 / ratio}%`};
+  padding-top: ${({ ratio }) => ratio && `calc(100% * ${ratio})`};
 
   & > * {
     position: absolute;
