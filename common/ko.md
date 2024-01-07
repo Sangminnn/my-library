@@ -69,3 +69,7 @@ module.exports = {
 - opacity와 rgba에서의 alpha 값의 차이는 opacity는 해당 엘리먼트의 모든 자식 요소의 명도 값을 지정하는 것이고, rgba는 적용한 element에만 적용된다.
 
 - `a >> b`에서 `>>` 연산자는 a 값을 b비트만큼 이동시키는 연산자이다.
+
+- requestAnimationFrame: 하나의 프레임에서 렌더링 전에 실행된다. 일반 JS 코드 실행에 비해 DOM 트리를 접근하는 작업은 느리고 시간을 예측하기 어렵다.
+
+- requestIdleCallback - 이는 layout - paint 과정 이후 남은 시간에 호출되는 함수로 인자로는 deadline을 받아 이에 대한 메서드인 timeRemaining을 실행하면 다음 렌더링까지 남은 시간을 반환해준다.
