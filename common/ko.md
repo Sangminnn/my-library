@@ -73,3 +73,14 @@ module.exports = {
 - requestAnimationFrame: 하나의 프레임에서 렌더링 전에 실행된다. 일반 JS 코드 실행에 비해 DOM 트리를 접근하는 작업은 느리고 시간을 예측하기 어렵다.
 
 - requestIdleCallback - 이는 layout - paint 과정 이후 남은 시간에 호출되는 함수로 인자로는 deadline을 받아 이에 대한 메서드인 timeRemaining을 실행하면 다음 렌더링까지 남은 시간을 반환해준다.
+
+- DocumentFragment는 마치 가상 DOM처럼 실제 렌더링 전에는 DOM 에 접근하지 않는다. 따라서 매번 DOM에 접근하여 요소를 변경해주는 document.getElementById().appendChild() 방식보다 훨씬 빠르다. 일반 Element였다면 나중에 타겟 태그 밑에 fragment가 들어가고 그 밑에 30개의 태그가 생기겠지만, DocumentFragment는 자신을 제외한 하위 엘리먼트들만 옮겨준다.
+
+```js
+// before
+document.getElementById("test").appendChild(elem);
+
+// after
+const fragment = document.createDocumentFragment();
+document.getElementById("list").appendChild(fragment);
+```
