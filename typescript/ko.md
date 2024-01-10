@@ -35,7 +35,42 @@
 ```
 
 - 타입가드의 패턴은 아래와 같다.
+
   1. 특정 타입을 typeof로 가드하는 방식
   2. 특정 인스턴스화된 객체 타입을 instanceof로 가드하는 방식
   3. 객체 내에서 특정 속성이 있는지를 확인하는 in 가드 방식
   4. 반환 타입에 타입 명제인 함수를 정의하여 사용하는 방법 ( A is B , A는 매개변수 B는 타입 )
+
+- ForwardRef의 반환타입은 보통 **ForwardRefExoticComponent<PropsWithoutRef<P> & RefAttributes<T>>** 로 나타난다. 따라서 이는 Ref를 가지고있지 않은 타겟 컴포넌트의 Props와 Ref를 가지고있는 ComponentPropsWithRef의 Ref props를 결합해주면 된다.
+
+```
+function forwardRef<T, P = {}>(render: ForwardRefRenderFunction<T, P>): ForwardRefExoticComponent<PropsWithoutRef<P> & RefAttributes<T>>;
+
+interface ForwardRefExoticComponent<P> extends NamedExoticComponent<P> {
+  defaultProps?: Partial<P> | undefined;
+  propTypes?: WeakValidationMap<P> | undefined;
+}
+
+type Validator<T> = PropTypes.Validator<T>;
+
+
+type WeakValidationMap<T> = {
+  [K in keyof T]?: null extends T[K]
+      ? Validator<T[K] | null | undefined>
+      : undefined extends T[K]
+      ? Validator<T[K] | null | undefined>
+      : Validator<T[K]>
+  };
+
+interface NamedExoticComponent<P = {}> extends ExoticComponent<P> {
+  displayName?: string | undefined;
+}
+
+interface ExoticComponent<P = {}> {
+  (props: P): (ReactElement|null);
+  readonly $$typeof: symbol;
+}
+
+
+type TargetComponent = ComponentPropsWithoutRef<T> & ComponentPropsWithRef<T>['Ref']
+```
