@@ -84,3 +84,9 @@ document.getElementById("test").appendChild(elem);
 const fragment = document.createDocumentFragment();
 document.getElementById("list").appendChild(fragment);
 ```
+
+- throttle은 이벤트가 연속적으로 발생한다면 처음 이벤트를 실행시키고 지정된 시간동안 이벤트에 대한 실행을 Block한다. 이후 지정된 시간이 지난다면 다시 위의 플로우를 반복한다.
+
+- debounce는 지정된 시간 내에서 연속적으로 이벤트가 발생한다면 발생 시점마다 타이머를 Reset하고 이전에 들어온 이벤트를 지우고 새로 들어온 이벤트를 등록한다. 이러한 과정을 통해 결국 마지막으로 발생한 이벤트만 남고, 지정된 시간이 지나면 마지막으로 발생한 이벤트가 실행된다.
+
+- debounce에는 최초 이벤트 실행을 타겟으로하는 Leading Edge와 위와 같이 마지막 이벤트 실행을 타겟으로 하는 Trailing Edge가 존재한다. Leading Edge의 경우 throttle과 유사하다고 생각할 수 있지만, 지정된 시간 주기 이후에는 이벤트가 한번씩 실행될 수 있는 throttle과 다르게 이벤트가 연속으로 실행되는 시간동안은 지정된 시간과 관계없이 계속해서 실행을 Blocking한다.
