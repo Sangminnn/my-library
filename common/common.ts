@@ -115,3 +115,15 @@ export function hexToRgba(hex: string, alpha: number) {
 
   return `rgba(${r},${g},${b}, ${alpha})`;
 }
+
+/** @description 원하는 프레임수만큼 뒤로 미루어 실행합니다. */
+export function skipFrames(
+  frameCount: number,
+  callback: (params?: any) => void
+) {
+  if (frameCount == 0) {
+    callback();
+  } else {
+    requestAnimationFrame(() => skipFrames(frameCount - 1, callback));
+  }
+}
