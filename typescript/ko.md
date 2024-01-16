@@ -74,3 +74,5 @@ interface ExoticComponent<P = {}> {
 
 type TargetComponent = ComponentPropsWithoutRef<T> & ComponentPropsWithRef<T>['Ref']
 ```
+
+- 다형성을 가진 컴포넌트를 만드는 과정에서 **as** attirbute를 활용할 수 있고, 이를 활용하는 경우 custom attribute와 기존 컴포넌트의 Props를 합치고 해당 컴포넌트가 forwardRef로 사용될 경우를 위해 props에 ref를 추가, 이때 ref는 해당 Component의 타입이면서 Ref를 가지고있는 타입인 ComponentPropsWithRef의 Ref를 pick 해서 사용해주면 Type-safe하게 사용이 가능하다.
