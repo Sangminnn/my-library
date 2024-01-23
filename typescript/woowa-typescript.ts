@@ -26,3 +26,81 @@ type AnswerPickOne<T> = {
 
 /** @description Promise.all 시에 내부의 항목들을 추론하기 위한 type */
 type UnwrapPromise<T> = T extends Promise<infer K>[] ? K : any;
+
+export class APIResponse<Ok, Err = string> {
+  private readonly data: Ok | Err | null;
+  private readonly status: ResponseStatus;
+  private readonly statusCode: number | null;
+
+  constructor(
+    data: Ok | Err | null,
+    statusCode: number | null,
+    status: ResponseStatus
+  ) {
+    this.data = data;
+    this.status = status;
+    this.statusCode = statusCode;
+  }
+
+  public static Success<T, E = string>(data: T): APIResponse<T, E> {
+    return new this<T, E>(data, 200, ResponseStatus.SUCCESS);
+  }
+
+  public static Error<T, E = unknown>(init: AxiosError): APIResponse<T, E> {
+    if (!init.response) {
+      return new this<T, E>(null, null, ResponseStatus.CLIENT_ERROR);
+    }
+
+    if (!init.response.data?.result) {
+      return new this<T, E>(
+        null,
+        init.response.status,
+        ResponseStatus.SERVER_ERROR
+      );
+    }
+
+    return new this<T, E>(
+      init.response.data.result,
+      init.response.status,
+      ResponseStatus.CLIENT_ERROR
+    );
+  }
+}
+
+// 사용코드
+const fetchShopStatus = async (): Promise<
+  APIResponse<IShopResponse | null>
+> => {
+  return await API.get<IShopResponse | null>();
+};
+
+export interface MobileApiResponse<Data> {
+  data: Data;
+  statusCode: string;
+  statusMessage?: string;
+}
+
+const fetchPriceInfo = (): Promise<MobileApiResponse<PriceInfo>> => {
+  const priceUrl = "https:~~"; // url 주소
+
+  return request({
+    method: "GET",
+    url: priceUrl,
+  });
+};
+
+// exhaustiveCheck를 통해 특정 switch문에서 타입이 다 정의되었고, 모두 케이스별로 할당이 되었는지를 확인할 수 있음. (assertion)
+const exhaustiveCheck = (param: never) => {
+  throw new Error("type Error");
+};
+
+type ProductPrice = "10000" | "20000" | "50000";
+const getProductName = (productPrice: ProductPrice) => {
+  if (productPrice === "10000") return "1만원권";
+  if (productPrice === "20000") return "2만원권";
+  // if(productPrice === '50000') return '5만원권' // <- 이와 같이 유니온 내에서 정의되어있지 않은 케이스가 있을 경우 남은 productPrice type이 있기때문에 never와 충돌
+  else {
+    exhaustiveCheck(productPrice);
+    return "상품권";
+  }
+};
