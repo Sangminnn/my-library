@@ -104,3 +104,135 @@ const getProductName = (productPrice: ProductPrice) => {
     return "상품권";
   }
 };
+
+interface RouteBase {
+  name: string;
+  path: string;
+  component: ComponentType;
+}
+
+export interface RouteItem {
+  name: string;
+  path: string;
+  component: ComponentType;
+  pages?: RouteBase[];
+}
+
+// MenuItem MainMenu | SubMenu 이고 MainItem은 subMenus가 있다면 이름으로서만 역할을 하고
+// infer를 사용하면 이후 조건문을 사용하여 타입을 좁혀나가는데 해당 타입을 사용하겠다는 의미
+
+type UnpackMenuNames<T extends ReadonlyArray<MenuItem>> =
+  T extends ReadonlyArray<infer U>
+    ? U extends MainMenu
+      ? U["subMenus"] extends infer V
+        ? V extends ReadonlyArray<SubMenu>
+          ? UnpackMenuNames<V>
+          : U["name"]
+        : never
+      : U extends SubMenu
+        ? U["name"]
+        : never
+    : never;
+
+export const routes: RouteItem[] = [
+  {
+    name: "기기 내역 관리",
+
+    path: "/device-history",
+    component: DeviceHistoryPage,
+  },
+  {
+    name: "헬멧 인증 관리",
+    path: "/helmet-certification",
+    component: HelmetCertificationPage,
+  },
+];
+
+// RouteItem의 name은 pages가 있을 때는 단순히 이름의 역할만 함. 그렇지 안다면 사용자 권한과 비교
+
+export interface SubMenu {
+  name: string;
+  path: string;
+}
+
+export interface MainMenu {
+  name: string;
+  path?: string;
+  subMenus?: SubMenu[];
+}
+
+// TO-BE
+export interface MainMenu {
+  name: string;
+  path?: string;
+  subMenus?: ReadonlyArray<SubMenu>;
+}
+
+export type MenuItem = MainMenu | SubMenu;
+
+export const menuList: MenuItem[] = [
+  {
+    name: "계정 관리",
+    subMenus: [
+      {
+        name: "기기 내역 관리",
+        path: "/device-history",
+      },
+      {
+        name: "헬멧 인증 관리",
+        path: "/helmet-certification",
+      },
+    ],
+  },
+  {
+    name: "운행 관리",
+    path: "/operation",
+  },
+];
+
+// TO-BE
+export const menuList = [
+  // ...
+] as const;
+
+// MainMenu의 name도 subMenus를 가지고 있을 때 단순히 이름의 역할만 함. 아니라면 권한으로 간주
+
+
+{ account: string } | { card: string }
+
+{ account: string } => { account: {
+  account: string
+} }['account']
+
+{ account: string }
+
+type One<T> = { [P in keyof T]: Record<P, T[P]> }[keyof T]
+type ExcludeOne<T> = { [P in keyof T]: Partial<Record<Exclude<keyof T, P>, undefined>> }[keyof T]
+
+type PickOne<T> = One<T> & ExcludeOne<T>
+// 본인 타입을 선택한것과 나머지는 전부 undefined으로 만든 타입을 intersection
+// 예시가 아래와 같음
+
+// PickOne<Card & Account> => {
+//   card: string;
+//   account: string;
+// }
+
+// { card: string; account?: undefined } | { card?: undefined; account: string } 으로 된다.
+// { [P in keyof T]: { // ... } }[keyof T] => 이 패턴은 결국 안쪽에서 연산한 값을 그대로 반환해주는 방법으로 보임
+
+type Card = {
+  card: string
+}
+
+type Account = {
+  account: string
+}
+
+Exclude<keyof T, P> => P에서 P를 제외 => 빈 key값, 혹은 다중값이 있다면 본인만 제외하고 나머지는 값을 그대로 유지 => 이후 Record를 통해 나머지값들은 전부 undefined
+=> partial로 감싸준다 => 
+
+{ account: string, card: string }
+=> {
+  account: 
+}
