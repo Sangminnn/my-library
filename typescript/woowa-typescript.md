@@ -250,3 +250,15 @@ interface Props<T extends string> {
   printMember = printUser // OK
   printUser = printMember // Error (nickname이 없음)
 ```
+
+- useState를 통해 초깃값을 설정해줄 때, 일반적인 값을 넣어준다면 이는 렌더링마다 값이 다시 계산되거나 새로운 객체를 생성한다. 하지만 초깃값에 값을 생성하는 함수를 넣어줄 경우 이는 최초 렌더링 시에만 함수호출을 통해 계산해주고 이후부터는 함수를 실행하지 않아 리렌더링 이슈에서 벗어날 수 있다. (초기 상태를 지연 초기화 (Lazy Initialization)하는 방식)
+
+```
+// re-calculate
+const [state, setState] = useState(initialValue)
+
+// calculate at first time
+const [state, setState] = useState(() => compute())
+```
+
+- props로 전달받은 값을 state의 초깃값으로 넣는 경우 prop의 값이 변경되어도 state가 변경되지 않는다. 이는 컴포넌트가 마운트될 때 한번만 해당 값을 받아서 설정하고 이후에는 독자적으로 관리하기 때문이다. 따라서 SSOT (Single Source Of Truth)를 지켜 한곳에서 관리하는 것이 좋다.
