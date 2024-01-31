@@ -54,7 +54,7 @@ interface RefObject<T> {
 }
 ```
 
-- 위에서 언급한 ForwardRefRenderFunction타입은 실제로는 ref를 주입받는 자식컴포넌트에서 사용하는 useImperativeHandle 메서드의 타입으로 사용이 가능하다. 이 역시 제네릭을 2가지 필요로 하는데 첫번째는 ref에 담아서 넘겨줄 Imperative Handler의 타입이고 두번째는 해당 자식 컴포넌트의 props이다.
+- 위에서 언급한 ForwardRefRenderFunction타입은 실제로는 ref를 주입받는 자식컴포넌트에서 사용하는 useImperativeHandle 메서드의 타입으로 사용이 가능하다. 이 역시 제네릭을 2가지 필요로 하는데 첫번째는 ref에 담아서 넘겨줄 Imperative Handler의 타입이고 두번째는 해당 자식 컴포넌트의 props이다. (ref와 forwardedRef의 쌍처럼 useImperativeHandle과 ForwardRefRenderFunction도 한 쌍으로 보면 좋다.)
 
 ```
 // 만약 submit을 커스텀해서 ref에 담으려면
@@ -262,3 +262,54 @@ const [state, setState] = useState(() => compute())
 ```
 
 - props로 전달받은 값을 state의 초깃값으로 넣는 경우 prop의 값이 변경되어도 state가 변경되지 않는다. 이는 컴포넌트가 마운트될 때 한번만 해당 값을 받아서 설정하고 이후에는 독자적으로 관리하기 때문이다. 따라서 SSOT (Single Source Of Truth)를 지켜 한곳에서 관리하는 것이 좋다.
+
+- 하나의 상태와 하나의 파생상태를 가지는 것보다는 하나의 상태를 기반으로한 memoization값을 가지는 것이 더 좋다.
+
+```
+// Anti-Pattern
+const [items, setItems] = useState<Item[]>([])
+const [selectedItems, setSelectedItems] = useState<Item[]>([])
+
+useEffect(() => {
+  setSelectedItems(items.filter((item) => item.isSelected))
+}, [items])
+
+// GOOD
+const [items, setItems] = useState<Item[]>([])
+const selectedItems = useMemo(() => expensive(items), [items])
+```
+
+- useState를 사용하기보다 useReducer를 사용하는 것이 유리한 상황이 있는데, 이는 여러가지 상태를 다룰때이다. 이러한 경우 계속해서 상태를 받아서 필요한 부분만 변경해주는 것은 위험부담이 있기때문에 원하는 상태를 명확하게 바꿀 수 있는 인터페이스를 제공하는 useReducer를 사용하는 것이 더 좋다.
+
+```
+// Action
+type Action =
+  | { payload: ReviewFilter; type: "filter" }
+  | { payload: number; type: "navigate" }
+  | { payload: number; type: "resize" }
+
+// Reducer
+const reducer: React.Reducer<State, Action> = (state, action) => {
+  switch (action.type) {
+    case "filter":
+      // ...
+    case "navigate":
+      // ...
+      // ...
+  }
+}
+
+const [state, dispatch] = useReducer(reducer, getDefaultState())
+
+dispatch({ payload: filter, type: "filter" })
+
+// 혹은 boolean 상태의 토글만을 사용하는 경우에도 유리
+const [fold, setFold] = useState(true)
+const toggleFold = () => {
+  // setFold(prev => !prev)
+}
+
+const [fold, toggleFold] = useReducer((v) => !v, true)
+```
+
+- useEffect에 비동기 함수가 들어갈 수 없는 이유는 경쟁상태를 유발할 수 있기 때문이다.
