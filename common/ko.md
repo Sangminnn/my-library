@@ -92,9 +92,12 @@ document.getElementById("list").appendChild(fragment);
 - debounce에는 최초 이벤트 실행을 타겟으로하는 Leading Edge와 위와 같이 마지막 이벤트 실행을 타겟으로 하는 Trailing Edge가 존재한다. Leading Edge의 경우 throttle과 유사하다고 생각할 수 있지만, 지정된 시간 주기 이후에는 이벤트가 한번씩 실행될 수 있는 throttle과 다르게 이벤트가 연속으로 실행되는 시간동안은 지정된 시간과 관계없이 계속해서 실행을 Blocking한다.
 
 - Object.is로의 비교와 ===의 비교의 차이는 0과 NaN이다.
+
   - ===의 경우
     - 부호가 있는 0은 모두 같게 처리
     - NaN은 서로 다르게 처리
   - Object.is
     - 부호가 있는 0은 같은 부호일때만 같게 처리
     - NaN은 같게 처리
+
+- 관심사에 따라 반복문도 분리하는게 좋음. N^N이라면 문제가 심각하지만, N O(N)에서 N은 무시해도 무방하다.
