@@ -101,3 +101,15 @@ document.getElementById("list").appendChild(fragment);
     - NaN은 같게 처리
 
 - 관심사에 따라 반복문도 분리하는게 좋음. N^N이라면 문제가 심각하지만, N O(N)에서 N은 무시해도 무방하다.
+
+- comma를 만드는 로직은 toLocaleString으로 대체가 가능하다. 다만 string타입이라면 변경되지 않기때문에 number타입을 대상으로 사용해야한다.
+
+- 다만 toLocaleString을 호출할 때마다 방대한 현지화 문자열 데이터베이스에서 검색을 수행해야 하므로 비효율적일 수 있다. 따라서 위와 같이 comma converting을 위해 여러번 호출해야하는 경우라면, Intl.NumberFormat 객체를 생성하고 그 메서드를 사용하는 것이 더 좋다.
+
+```
+const number = 12341234
+number.toLocaleString() // 12,341,234
+
+const convertNumberToComma = new Intl.NumberFormat('ko-KR').format
+convertNumberToComma(number) // 12,341,234
+```
