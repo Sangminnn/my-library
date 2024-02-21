@@ -76,3 +76,14 @@ type TargetComponent = ComponentPropsWithoutRef<T> & ComponentPropsWithRef<T>['R
 ```
 
 - 다형성을 가진 컴포넌트를 만드는 과정에서 **as** attirbute를 활용할 수 있고, 이를 활용하는 경우 custom attribute와 기존 컴포넌트의 Props를 합치고 해당 컴포넌트가 forwardRef로 사용될 경우를 위해 props에 ref를 추가, 이때 ref는 해당 Component의 타입이면서 Ref를 가지고있는 타입인 ComponentPropsWithRef의 Ref를 pick 해서 사용해주면 Type-safe하게 사용이 가능하다.
+
+- vite를 사용할때 개발환경에서는 속도의 이점때문에 타입 검사를 하지 않는다. 따라서 실제 런타임에서 에러가 발생하는 부분을 터미널에서 잡아낼 수 없는데, 이를 해결하기 위해서는 실행 시 tsc를 같이 실행해주거나 **vite-plugin-checker**를 플러그인에 추가해주면 잡아낼 수 있다.
+
+```
+"scripts": {
+  "type-check": "tsc",
+  "dev": "yarn type-check && vite"
+}
+```
+
+[text](https://ko.vitejs.dev/guide/features.html#typescript)
