@@ -112,4 +112,22 @@ number.toLocaleString() // 12,341,234
 
 const convertNumberToComma = new Intl.NumberFormat('ko-KR').format
 convertNumberToComma(number) // 12,341,234
+
+// 옵션을 통해 원화단위도 추가 가능
+const convertNumberToComma = new Intl.NumberFormat('ko-KR', { style: "currency", currency: "KRW" }).format
+convertNumberToComma(number) // '₩12,341,234'
+
+// maximumSignificantDigits 옵션을 사용하면 앞자리부터 해당 값만큼만 유효한 값으로 정의한다.
+new Intl.NumberFormat("en-IN", { maximumSignificantDigits: 3 }).format(number) // 1,23,00,000
+new Intl.NumberFormat("en-IN", { maximumSignificantDigits: 5 }).format(number) // 1,23,41,000
 ```
+
+- Intl.NumberFormat의 두번째 인자로는 여러가지 옵션이 있다.
+
+  - **style**: 숫자의 표현 방식을 지정합니다. (ex. 'decimal' (기본값), 'currency', 'percent', 'unit')
+  - **currency**: 'style'이 'currency'로 설정된 경우 사용할 통화를 지정합니다. (ex. 'USD', 'EUR', 'JPY')
+  - **currencyDisplay**: 통화를 어떻게 표시할지 결정합니다. (ex. 'symbol' (기호, 예: $), 'narrowSymbol', 'code' (통화 코드, 예: USD), 'name' (통화명, 예: dollar) )
+  - **useGrouping**: 천 단위 구분자 사용 여부를 지정합니다. 기본값은 true이며, 숫자에 콤마를 사용합니다.
+  - **minimumIntegerDigits**: 최소 정수 자릿수를 지정합니다. 기본값은 1입니다.
+  - **minimumFractionDigits / maximumFractionDigits**: 표시할 최소/최대 소수점 이하 자릿수를 지정합니다.
+  - **minimumSignificantDigits / maximumSignificantDigits**: 표시할 최소/최대 유효 숫자의 개수를 지정합니다. 이 옵션을 설정하면 minimumFractionDigits와 maximumFractionDigits는 무시됩니다.
