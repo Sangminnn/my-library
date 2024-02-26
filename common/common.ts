@@ -127,3 +127,17 @@ export function skipFrames(
     requestAnimationFrame(() => skipFrames(frameCount - 1, callback));
   }
 }
+
+export const pick = (obj, ...propNames) => {
+  if (!obj || !propNames) {
+    return {};
+  }
+
+  return Object.keys(obj).reduce((acc, key) => {
+    if (propNames.includes(key)) {
+      acc[key] = obj[key];
+    }
+
+    return acc;
+  }, {});
+};
