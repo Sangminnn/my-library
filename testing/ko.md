@@ -43,3 +43,7 @@
 
 - jsdom vs happy-dom
   -> 일반적으로 자주 사용하는 API에서는 happy-dom이 최적화를 더 잘해두어 성능이 우수하나, jsdom이 더 오랜 연혁을 가지고있어 에러상황에서 정보가 많고, happy-dom에서는 지원하지 않는 API가 있을 수 있어 비교하고 사용해야한다.
+
+- clearAllMocks vs resetAllMocks
+  - `clearAllMocks` : 모킹한 모의 함수의 호출 상태나 반환된 값의 기록을 초기화함. 함수의 구현이나 반환 값을 변경하지는 않고 함수의 호출 횟수나 함께 호출된 인자에 대한 정보를 초기화
+  - `resetAllMocks` : clearAllMocks에서 하는 역할을 모두 수행하며 추가적으로 모킹한 함수들의 구현까지 모두 초기화
