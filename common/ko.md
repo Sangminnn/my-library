@@ -131,3 +131,8 @@ new Intl.NumberFormat("en-IN", { maximumSignificantDigits: 5 }).format(number) /
   - **minimumIntegerDigits**: 최소 정수 자릿수를 지정합니다. 기본값은 1입니다.
   - **minimumFractionDigits / maximumFractionDigits**: 표시할 최소/최대 소수점 이하 자릿수를 지정합니다.
   - **minimumSignificantDigits / maximumSignificantDigits**: 표시할 최소/최대 유효 숫자의 개수를 지정합니다. 이 옵션을 설정하면 minimumFractionDigits와 maximumFractionDigits는 무시됩니다.
+
+- Object를 수정하지 못하도록 하는 메서드는 3가지가 있다.
+  - `Object.preventExtensions` - 추가 금지
+  - `Object.seal` - 추가/제거 금지
+  - `Object.freeze` - 추가/제거/변경 금지
