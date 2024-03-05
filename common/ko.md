@@ -133,6 +133,9 @@ new Intl.NumberFormat("en-IN", { maximumSignificantDigits: 5 }).format(number) /
   - **minimumSignificantDigits / maximumSignificantDigits**: 표시할 최소/최대 유효 숫자의 개수를 지정합니다. 이 옵션을 설정하면 minimumFractionDigits와 maximumFractionDigits는 무시됩니다.
 
 - Object를 수정하지 못하도록 하는 메서드는 3가지가 있다.
+
   - `Object.preventExtensions` - 추가 금지
   - `Object.seal` - 추가/제거 금지
   - `Object.freeze` - 추가/제거/변경 금지
+
+- onClick 이벤트를 발생시키면 이는 [onMouseDown -> onFocus (focus되어있는 엘리먼트가 있다면 해당 엘리먼트 기준으로는 onBlur) -> onMouseUp -> onClick]의 순서로 이벤트가 발생하게 된다. 따라서 특정 엘리먼트의 onBlur를 제어하는 방법으로 onMouseDown이벤트에 preventDefault를 사용하는 방법도 있다.
