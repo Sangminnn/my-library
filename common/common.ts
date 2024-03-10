@@ -128,16 +128,22 @@ export function skipFrames(
   }
 }
 
-export const pick = (obj, ...propNames) => {
+export const pick = <T extends object, K extends keyof T>(
+  obj: T,
+  ...propNames: K[]
+): Pick<T, K> => {
   if (!obj || !propNames) {
-    return {};
+    return {} as Pick<T, K>;
   }
 
-  return Object.keys(obj).reduce((acc, key) => {
-    if (propNames.includes(key)) {
-      acc[key] = obj[key];
-    }
+  return Object.keys(obj).reduce(
+    (acc, key) => {
+      if (propNames.includes(key as K)) {
+        acc[key as K] = obj[key as K];
+      }
 
-    return acc;
-  }, {});
+      return acc;
+    },
+    {} as Pick<T, K>
+  );
 };
