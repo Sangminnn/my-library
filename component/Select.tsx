@@ -93,8 +93,42 @@ const Option = ({ children }: SelectOptionProps) => {
   );
 };
 
+const ListItem = ({
+  value,
+  className,
+  selected: controlledSelected,
+  children,
+}: PropsWithChildren<{
+  className?: string;
+  value: string | Record<string, unknown>;
+  selected?: boolean;
+}>) => {
+  return (
+    <Select.Option>
+      {({ value: selectedValue, onChange, setOpen }: SelectContextProps) => {
+        const uncontrolledSelected = value === selectedValue;
+        const selected = controlledSelected ?? uncontrolledSelected;
+
+        return (
+          <DefaultListItem
+            className={className}
+            selected={selected}
+            onClick={() => {
+              onChange?.(value);
+              setOpen(false);
+            }}
+          >
+            {children}
+          </DefaultListItem>
+        );
+      }}
+    </Select.Option>
+  );
+};
+
 Select.Trigger = Trigger;
 Select.OptionList = OptionList;
 Select.Option = Option;
+Select.Item = ListItem;
 
 export default Select;
