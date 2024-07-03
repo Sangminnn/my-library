@@ -139,3 +139,5 @@ new Intl.NumberFormat("en-IN", { maximumSignificantDigits: 5 }).format(number) /
   - `Object.freeze` - 추가/제거/변경 금지
 
 - onClick 이벤트를 발생시키면 이는 [onMouseDown -> onFocus (focus되어있는 엘리먼트가 있다면 해당 엘리먼트 기준으로는 onBlur) -> onMouseUp -> onClick]의 순서로 이벤트가 발생하게 된다. 따라서 특정 엘리먼트의 onBlur를 제어하는 방법으로 onMouseDown이벤트에 preventDefault를 사용하는 방법도 있다.
+
+- **Reflect.ownKeys**는 **Object.keys**와 유사하게 객체에 대해서 순회하여 key를 반환해주는 역할을 하는데 **Object.keys는 Symbol값을 제외하고 순회**하는 반면, **Reflect.ownKeys는 Symbol값을 포함하여 순회**하는 차이가 있다.
