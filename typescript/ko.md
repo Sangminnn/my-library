@@ -87,3 +87,41 @@ type TargetComponent = ComponentPropsWithoutRef<T> & ComponentPropsWithRef<T>['R
 ```
 
 [text](https://ko.vitejs.dev/guide/features.html#typescript)
+
+- 명시적 타입과 객체 리터럴의 타입 추론의 차이를 인지해야한다. 기본적으로 객체 리터럴의 타입을 자동으로 추론하는 경우 내부적으로 객체의 특성 상 어떤 값이던 객체에 추가될 수 있다는 점에서 나타난다. 그렇기때문에 자동으로 추론하는 경우 내부적으로 index signature를 가지고있는데, 이는 명시적 타입의 동작과는 다르다. 명시적 타입은 특정 타입을 정해두었기때문에 내부적으로는 index signature를 가지고있지 않다. 따라서 호환성에 문제가 생길 수 있는 것이다.
+
+```typescript
+interface Test {
+  a: number;
+  b: number;
+  c: number;
+}
+
+// 객체 리터럴의 타입 자동 추론
+const test1 = {
+  a: 1,
+  b: 2,
+  c: 3,
+};
+
+// 명시적 타입
+const test2: Test = {
+  a: 1,
+  b: 2,
+  c: 3,
+};
+
+type HasIndexSignature<T> = T extends Record<PropertyKey, T[keyof T]>
+  ? true
+  : false;
+
+// Record가 추론을 통해 아래와 같이 제한한다.
+/**
+ * type Test {
+ *   [key: string]: number
+ * }
+ */
+
+HasIndexSignature<typeof test1>; // true
+HasIndexSignature<typeof test2>; // false - string에 대한 index signature가 없습니다 에러 발생
+```
