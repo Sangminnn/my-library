@@ -39,3 +39,15 @@ const useMemo = (callback) => {
 - 함수 컴포넌트는 근본적으로 클로저로 동작한다. 이를 setTimeout을 통해 내부 state를 바라보도록 하고 실행한다면 하나의 스냅샷처럼 동작하여 그 당시의 state를 나타낸다. 하지만 과거의 클래스형 컴포넌트는 immutable한 props를 this를 통해서 접근하기때문에 가장 최신값을 기준으로 반환하게 된다.
 - React의 Hydration Mismatch으로 인해 CSR과 SSR 환경을 체크하여 반환하는 상태관리에 어려움을 자주 겪는데, useEffect로 상태를 나누게된다면 부득이하게 SSR에서는 상태를 보여주지 않도록 처리하는 과정이 필요하며 Effect로 수행될때까지 상태값을 받아오기위해 기다려야한다는 단점이 있다. 이때 useSyncExternalStore를 활용하면 좋은데 이를 활용하면 hydration없이 CSR 진행하는 경우나 CSR 라우팅으로 해당 컴포넌트가 실행된다면, 컴포넌트 함수 랜더링 시점에 즉시 `클라이언트 스냅샷`이 호출 되어 값을 알 수 있다는 점에서 단순히 useEffect를 사용하는 케이스보다 더 좋은 경험을 제공할 수 있다. (https://tkdodo.eu/blog/avoiding-hydration-mismatches-with-use-sync-external-store)
 - 하지만 위의 방식은 Client SnapShot에서 객체를 반환하는 경우 참조 형태로 의존성을 체크하기때문에 무한호출이슈가 발생한다. 이를 해결하기 위해서는 값을 반환하는 경우에만 사용하거나 캐싱을 사용하여 구현해야한다.
+- Next.js에서 useLayoutEffect를 사용하여 렌더링 사이클 내에서 re-render를 일으키는 코드와 Suspense가 같은 지면에 존재한다면
+
+> **Error: This Suspense boundary received an update before it finished hydrating. This caused the boundary to switch to client rendering. The usual way to fix this is to wrap the original update in startTransition.**
+
+라는 에러가 발생한다. 이는 Suspense로 인해 미루어진 Hydration 도중에 useLayoutEffect로 인해 re-render가 발생하여 생기는 문제이다.
+
+문제가 발생하는 이유는 React의 안전 메커니즘때문인데, 서버와 클라이언트의 렌더링 결과가 일치하지 않으면, React는 일관성을 유지하기 위해 클라이언트에서 모든 것을 다시 렌더링하는 것이 더 안전하다고 판단하여 기존의 결과물을 버리고 클라이언트 사이드에서 다시 전체를 렌더링한다.
+
+따라서 useIsomorphicLayoutEffect 를 사용할 때, Suspense와 같이 사용하지 않도록 주의해야하며 이를 해결하는 방법은 다음과 같다.
+
+- 정말 useLayoutEffect가 필요한지 다시한번 생각해보자. DOM 측정이나 조작에 대한 부분이 아니라면 useEffect로 대체하자
+- 부득이하게 useIsomorphicLayoutEffect를 Suspense와 같이 사용하면서 상태 업데이트를 해야한다면 React 18에서 Concurrent Mode에서의 Transition Lane으로 우선순위를 미뤄주는 startTransition API를 사용하면 상태 변경이 Hydration을 방해하지 않도록 후순위로 밀려 정상적으로 사용이 가능하다 (비추천)
