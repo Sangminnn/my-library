@@ -129,3 +129,4 @@ new Intl.NumberFormat("en-IN", { maximumSignificantDigits: 5 }).format(number) /
   → ex. setTimeout과 같은 n초후 동작에는 당연하게도 안되고, 해당 시간 이후 state변경 및 이를 트리거로 하여 hidden tag를 클릭하는 트릭도 먹히지 않음
   → 결국 유저의 직접 클릭 액션에 따라 즉각적으로 새창이 열리는게 아니라면 전부다 블락하는 것으로 보인다. 아마도 isTrusted 속성같은걸 참조해서 구분하는듯하다.
   → 이를 해결하기 위해서는 부득이하게 iOS에서는 새창을 열지 못하고 동일 지면 내에서 이동시켜줘야한다. window.open 로직을 변수에 담고, 해당 로직으로 인해 켜진 창이 있다면 그대로 두고, 없는 경우에는 window.location.href 로 이동해주는 것이 현재로서는 대안으로 보인다.
+- UA-Parser-Js를 사용할 때 크롬에서 개발자 도구를 통해 디버깅을 수행하면 iPhone으로 설정 시 browser가 Mobile Safari로 잡힌다. 하지만 user agent만 intercept하여 수정되었을 뿐 환경은 크롬 브라우저로 인식되어 크롬에서 수행할 수 있는 Web API들은 모두 수행이 가능하다. 따라서 브라우저에 따라 분기처리하는 로직이 존재하는 경우 이러한 현상으로 인해 디버깅 시 예상과 다르게 동작할 수 있기때문에 유의해야한다.
