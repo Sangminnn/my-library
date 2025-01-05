@@ -145,3 +145,29 @@ type testType = Invert<test>;
 // test 형식이 Record<keyof test, string | number | symbol> 제약 조건을 만족하지 않는다.
 // c의 [] 형식은 string | number | symbol 형식에 할당할 수 없다.
 ```
+
+- Typescript의 Satisfies는 타입 선언방식과는 다른데, 이유는 순서에 있다고 봐도 괜찮다. 기존의 타입선언은 먼저 틀을 만들어두고, 해당 틀에 들어오는 값들이 해당하는지를 체크하는 시스템이다. 따라서 틀을 만들어두고 이 안에 넣기때문에 key의 값이 선언한것과 다르거나, 객체 안에서 들어올 수 있는 값을 유니온으로 선언했을 때 이에 대한 정확한 추론이 불가하다.
+
+```jsx
+// ex. red에서 string의 속성을 활용하려고하면 문제가 발생
+// 이는 red가 string 혹은 number[] 일 수 있다는 정보까지만 알고있기 때문
+const test: Record<'red' | 'blue' | 'green', string | [number, number, number]> = {
+	'red': 'asdf',
+	'blue': [123, 12, 1],
+	'green': 'asdf'
+}
+
+// but, Satisfies는 나중에 체크하는 개념이기때문에 red가 string인것을 알고있다.
+
+const test = {
+	'red': 'asdf',
+	'blue': [123, 12, 1],
+	'green': 'asdf'
+} satisfies Record<'red' | 'blue' | 'green', string | [number, number, number]>
+```
+
+그렇다면 as const와 satisfies의 차이는?
+
+→ as const는 타입을 리터럴 타입(특정 값 자체를 타입으로 만든다.)으로 만들어 구체화하는데, 각 타입을 readonly로 만들어버려 수정이 불가해진다.
+
+→ 하지만 satisfies는 유연하게 타입을 검사하기때문에 수정도 가능하다.
