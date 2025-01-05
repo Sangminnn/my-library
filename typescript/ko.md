@@ -125,3 +125,23 @@ type HasIndexSignature<T> = T extends Record<PropertyKey, T[keyof T]>
 HasIndexSignature<typeof test1>; // true
 HasIndexSignature<typeof test2>; // false - string에 대한 index signature가 없습니다 에러 발생
 ```
+
+- typescript의 Record에서 value쪽에 keyof any를 사용하는 경우가 있는데, 이는 value가 key로 쓰일 수 있음을 명시하는 것이다.
+
+```typescript
+type Invert<T extends Record<PropertyKey, keyof any>> = {
+  [K in keyof T as T[K]]: K;
+};
+
+type test = {
+  a: 1;
+  b: 2;
+  c: [];
+};
+
+type testType = Invert<test>;
+
+// 결과
+// test 형식이 Record<keyof test, string | number | symbol> 제약 조건을 만족하지 않는다.
+// c의 [] 형식은 string | number | symbol 형식에 할당할 수 없다.
+```
