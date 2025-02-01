@@ -59,6 +59,7 @@ const useMemo = (callback) => {
 - 부득이하게 useIsomorphicLayoutEffect를 Suspense와 같이 사용하면서 상태 업데이트를 해야한다면 React 18에서 Concurrent Mode에서의 Transition Lane으로 우선순위를 미뤄주는 startTransition API를 사용하면 상태 변경이 Hydration을 방해하지 않도록 후순위로 밀려 정상적으로 사용이 가능하다 (비추천)
 
 - **Tearing**이란 React의 Concurrent Mode에서 동일한 상태 변경에 따라 각 컴포넌트가 다른 렌더링 진행시간을 가져 일시적인 불일치 현상이 일어나는 것
+
   - 이러한 문제는 단순히 보여지는데에는 심각한 문제까지는 초래하지않지만 이를 통해 다시 상태를 변경하는 경우 문제가 생긴다.
   - 따라서 React 외부에 상태를 두고 사용하는 경우 렌더링 사이클과 결합시키지 않으면 이런 문제가 생길 가능성이 있다.
   - | 이 문제를 해결하기 위해서는 React 18에서 제공하는 useSyncExternalStore를 활용할 수 있다. | col1 | col2 | col3 |
@@ -66,10 +67,17 @@ const useMemo = (callback) => {
     |                                                                                          |      |      |
     |                                                                                          |      |      |
 
-* jotai는 근본적으로 내부 상태에 대한 것을 다루기 위한 모델링으로 useSyncExternalStore를 지원하지 않는 이유는 업데이트 시 순간적인 Tearing현상을 해결하기보다 동시성 모드를 지원하고자 함이다.
+- jotai는 근본적으로 내부 상태에 대한 것을 다루기 위한 모델링으로 useSyncExternalStore를 지원하지 않는 이유는 업데이트 시 순간적인 Tearing현상을 해결하기보다 동시성 모드를 지원하고자 함이다.
 
-* zustnad는 근본적으로 외부 상태에 대한 것을 다루기 위한 모델링으로 Tearing 현상을 해결하지만 동시성 모드를 지원하지는 못한다. (내부적으로 uSES를 사용중)
+- zustnad는 근본적으로 외부 상태에 대한 것을 다루기 위한 모델링으로 Tearing 현상을 해결하지만 동시성 모드를 지원하지는 못한다. (내부적으로 uSES를 사용중)
 
-* 둘이 위와 같이 동작하는 이유는 useSyncExternalStore를 활용할 때 상태 업데이트가 동기적으로 일어나기 때문이다.
+- 둘이 위와 같이 동작하는 이유는 useSyncExternalStore를 활용할 때 상태 업데이트가 동기적으로 일어나기 때문이다.
 
-* useState는 변경사항이 없다면 re-render를 일으키지 않지만, useReducer는 변경사항이 없어도 action이 dispatch된다면 re-render를 일으킨다.
+- useState는 변경사항이 없다면 re-render를 일으키지 않지만, useReducer는 변경사항이 없어도 action이 dispatch된다면 re-render를 일으킨다.
+
+- React는 17버전 이전 babel transpiling 과정이 필요할 때에 React를 import해주어야하는 문제가 있었다. 이렇게 될 경우 React를 전부 불러오기때문에 번들 사이즈 측면에도 좋지 않다. 또한 이전 버전에서는 전부 transpile 시에 createElement가 되어 function call 이 즉각적으로 일어나 렌더링이 일어나지 않는 상황에서도 함수를 실행하고 만들어내는데, 이후 버전에서는 \_jsx 로 바꾸기때문에 렌더링 시점에 실행하여 만들어내는 것으로 바뀌어 효율적으로 되었다. 이로부터 아래와 같은 이점이 생겼다.
+
+1. 번들 사이즈 최적화 (트리쉐이킹 개선)
+2. 불필요한 함수 호출 제거
+3. 렌더링 시점 최적화
+4. 더 효율적인 메모리 사용
