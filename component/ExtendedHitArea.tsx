@@ -1,13 +1,26 @@
-import { forwardRef, ReactNode } from "react";
+import { Children, ReactElement, forwardRef } from "react";
 
 interface ExtendedHitAreaProps {
-  children: ReactNode;
+  children: ReactElement;
   padding?: number;
-  onClick?: () => void;
+  onClick?: (...args: any[]) => void;
 }
 
 const ExtendedHitArea = forwardRef<HTMLDivElement, ExtendedHitAreaProps>(
   ({ children, padding = 10, onClick }, ref) => {
+    const childProps = Children.only(children).props;
+    const onClickFromChild = childProps.onClick;
+
+    const handleClick = (...args: any[]) => {
+      if (onClickFromChild) {
+        onClickFromChild(...args);
+      }
+
+      if (onClick) {
+        onClick(...args);
+      }
+    };
+
     return (
       <div
         ref={ref}
@@ -15,7 +28,6 @@ const ExtendedHitArea = forwardRef<HTMLDivElement, ExtendedHitAreaProps>(
           position: "relative",
           display: "inline-block",
         }}
-        onClick={onClick}
       >
         <div
           style={{
@@ -27,6 +39,7 @@ const ExtendedHitArea = forwardRef<HTMLDivElement, ExtendedHitAreaProps>(
             pointerEvents: "auto",
             touchAction: "manipulation",
           }}
+          onClick={handleClick}
         />
         <div style={{ pointerEvents: "none" }}>{children}</div>
       </div>
