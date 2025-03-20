@@ -1,3 +1,4 @@
+"use client";
 import { ReactNode, useState } from "react";
 
 interface FoldedTextProps {
@@ -24,17 +25,13 @@ const FoldedText = ({
   const toggleExpand = () => setIsExpanded((prev) => !prev);
 
   const isOverMaxLength = text.length > maxLength;
-  const slicedText = text.slice(0, maxLength);
+  const slicedText = `${text.slice(0, maxLength)}...`;
 
-  if (!isOverMaxLength) {
-    return <>{renderExpanded({ fullText: text, toggleExpand })}</>;
+  if (!isExpanded && isOverMaxLength) {
+    return <>{renderFolded({ slicedText, toggleExpand })}</>;
   }
 
-  if (isExpanded) {
-    return <>{renderExpanded({ fullText: text, toggleExpand })}</>;
-  }
-
-  return <>{renderFolded({ slicedText, toggleExpand })}</>;
+  return <>{renderExpanded({ fullText: text, toggleExpand })}</>;
 };
 
 export default FoldedText;
